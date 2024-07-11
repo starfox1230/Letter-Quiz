@@ -132,6 +132,8 @@
                 setTimeout(() => {
                     document.body.classList.remove('strobe');
                     button.classList.remove('selected');
+                    button.style.backgroundColor = '#ff99cc';
+                    button.style.transform = 'none';
                     score++;
                     scoreDisplay.textContent = `Score: ${score}`;
                     displayQuestion();
@@ -148,6 +150,7 @@
                     buttons.forEach(btn => {
                         btn.disabled = false;
                         btn.style.backgroundColor = '#ff99cc';
+                        btn.style.transform = 'none';
                     });
                     playAudio(currentLetter);
                 }, 5000);
