@@ -72,6 +72,11 @@
             100% { background-color: #ffd1e1; }
         }
 
+        .no-hover *:hover {
+            background-color: #ff99cc !important;
+            transform: none !important;
+        }
+
         @media (hover: none) {
             button:hover {
                 background-color: #ff99cc;
@@ -147,6 +152,7 @@
                 }, 2000);
             } else {
                 document.body.style.backgroundColor = 'red';
+                document.body.classList.add('no-hover');
                 const buttons = document.querySelectorAll('#options button');
                 buttons.forEach(btn => {
                     btn.disabled = true;
@@ -154,6 +160,7 @@
                 });
                 setTimeout(() => {
                     document.body.style.backgroundColor = '';
+                    document.body.classList.remove('no-hover');
                     buttons.forEach(btn => {
                         btn.disabled = false;
                         btn.style.backgroundColor = '#ff99cc';
