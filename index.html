@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffe6f0;
+            transition: background-color 0.3s;
+        }
+
+        #quiz-container {
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background-color: #ff99cc;
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            margin: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #ffd1e1;
+            transform: scale(1.1);
+        }
+
+        button.selected {
+            background-color: #cce6ff;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .strobe {
+            animation: strobe 2s infinite;
+        }
+
+        @keyframes strobe {
+            0% { background-color: #ffd1e1; }
+            25% { background-color: #e1d1ff; }
+            50% { background-color: #d1ffe1; }
+            75% { background-color: #fff4d1; }
+            100% { background-color: #ffd1e1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="score">Score: 0</div>
+    <div id="quiz-container">
+        <button id="play-audio">Play Letter</button>
+        <div id="options"></div>
+    </div>
+    <audio id="letter-audio"></audio>
+    <script>
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        const audioFolderPath = ''; // Add the path to your audio files if needed
+        const letterAudio = document.getElementById('letter-audio');
+        const playAudioButton = document.getElementById('play-audio');
+        const optionsContainer = document.getElementById('options');
+        const scoreDisplay = document.getElementById('score');
+        let score = 0;
+        let currentLetter = '';
+
+        function getRandomLetter() {
+            return letters[Math.floor(Math.random() * letters.length)];
+        }
+
+        function generateOptions(correctLetter) {
+            const options = [correctLetter];
+            while (options.length < 4) {
+                const randomLetter = getRandomLetter();
+                if (!options.includes(randomLetter)) {
+                    options.push(randomLetter);
+                }
+            }
+            return options.sort(() => Math.random() - 0.5);
+        }
+
+        function playAudio(letter) {
+            letterAudio.src = `${audioFolderPath}${letter}.mp3`;
+            letterAudio.play();
+        }
+
+        function displayQuestion() {
+            currentLetter = getRandomLetter();
+            playAudio(currentLetter);
+
+            const options = generateOptions(currentLetter);
+            optionsContainer.innerHTML = '';
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.addEventListener('click', () => checkAnswer(button, option));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(button, selectedLetter) {
+            if (selectedLetter === currentLetter) {
+                document.body.classList.add('strobe');
+                button.classList.add('selected');
+                setTimeout(() => {
+                    document.body.classList.remove('strobe');
+                    button.classList.remove('selected');
+                    score++;
+                    scoreDisplay.textContent = `Score: ${score}`;
+                    displayQuestion();
+                }, 2000);
+            } else {
+                document.body.style.backgroundColor = 'red';
+                setTimeout(() => {
+                    document.body.style.backgroundColor = '';
+                    playAudio(currentLetter);
+                }, 5000);
+            }
+        }
+
+        playAudioButton.addEventListener('click', () => playAudio(currentLetter));
+        document.addEventListener('DOMContentLoaded', displayQuestion);
+    </script>
+</body>
+</html>
