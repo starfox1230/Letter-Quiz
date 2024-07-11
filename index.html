@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Letter Quiz</title>
     <style>
         body {
@@ -15,6 +15,7 @@
             margin: 0;
             background-color: #ffe6f0;
             transition: background-color 0.3s;
+            overflow: hidden;
         }
 
         #quiz-container {
@@ -22,15 +23,16 @@
         }
 
         button {
-            padding: 10px 20px;
-            font-size: 1.5rem;
+            padding: 15px 25px;
+            font-size: 2rem;
             cursor: pointer;
             background-color: #ff99cc;
             border: none;
             border-radius: 10px;
             color: #ffffff;
-            margin: 5px;
+            margin: 10px;
             transition: background-color 0.3s, transform 0.3s;
+            outline: none;
         }
 
         button:hover {
@@ -42,11 +44,15 @@
             background-color: #cce6ff;
         }
 
+        button:disabled {
+            cursor: not-allowed;
+        }
+
         #score {
             position: absolute;
             top: 10px;
             left: 10px;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
         }
 
@@ -60,6 +66,17 @@
             50% { background-color: #d1ffe1; }
             75% { background-color: #fff4d1; }
             100% { background-color: #ffd1e1; }
+        }
+
+        .wrong {
+            background-color: red !important;
+            color: white;
+            transform: none !important;
+        }
+
+        .wrong:hover {
+            background-color: red !important;
+            transform: none !important;
         }
     </style>
 </head>
@@ -115,6 +132,7 @@
         }
 
         function checkAnswer(button, selectedLetter) {
+            playAudio(selectedLetter);
             if (selectedLetter === currentLetter) {
                 document.body.classList.add('strobe');
                 button.classList.add('selected');
@@ -127,8 +145,17 @@
                 }, 2000);
             } else {
                 document.body.style.backgroundColor = 'red';
+                const buttons = document.querySelectorAll('#options button');
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.add('wrong');
+                });
                 setTimeout(() => {
                     document.body.style.backgroundColor = '';
+                    buttons.forEach(btn => {
+                        btn.disabled = false;
+                        btn.classList.remove('wrong');
+                    });
                     playAudio(currentLetter);
                 }, 5000);
             }
@@ -136,6 +163,16 @@
 
         playAudioButton.addEventListener('click', () => playAudio(currentLetter));
         document.addEventListener('DOMContentLoaded', displayQuestion);
+
+        document.addEventListener('touchmove', function(event) {
+            if (event.scale !== 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener('gesturestart', function(event) {
+            event.preventDefault();
+        });
     </script>
 </body>
 </html>
