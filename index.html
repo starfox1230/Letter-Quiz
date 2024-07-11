@@ -20,6 +20,8 @@
 
         #quiz-container {
             text-align: center;
+            max-width: 100%;
+            overflow: hidden;
         }
 
         button {
@@ -33,6 +35,8 @@
             margin: 10px;
             transition: background-color 0.3s, transform 0.3s;
             outline: none;
+            max-width: calc(100% - 20px);
+            box-sizing: border-box;
         }
 
         button:hover {
@@ -66,17 +70,6 @@
             50% { background-color: #d1ffe1; }
             75% { background-color: #fff4d1; }
             100% { background-color: #ffd1e1; }
-        }
-
-        .wrong {
-            background-color: red !important;
-            color: white;
-            transform: none !important;
-        }
-
-        .wrong:hover {
-            background-color: red !important;
-            transform: none !important;
         }
     </style>
 </head>
@@ -148,13 +141,13 @@
                 const buttons = document.querySelectorAll('#options button');
                 buttons.forEach(btn => {
                     btn.disabled = true;
-                    btn.classList.add('wrong');
+                    btn.style.backgroundColor = 'red';
                 });
                 setTimeout(() => {
                     document.body.style.backgroundColor = '';
                     buttons.forEach(btn => {
                         btn.disabled = false;
-                        btn.classList.remove('wrong');
+                        btn.style.backgroundColor = '#ff99cc';
                     });
                     playAudio(currentLetter);
                 }, 5000);
